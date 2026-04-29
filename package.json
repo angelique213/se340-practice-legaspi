@@ -1,14 +1,16 @@
 {
   "name": "se340-practice-legaspi",
   "dependencies": {
+    "ejs": "^5.0.2",
     "express": "^5.2.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "ws": "^8.20.0"
   },
   "type": "module",
-"scripts": {
-  "dev": "nodemon --exec node --env-file=.env server.js",
-  "start": "node server.js"
-}
+  "scripts": {
+    "dev": "nodemon --exec node --env-file=.env server.js",
+    "start": "node server.js"
+  }
 }
