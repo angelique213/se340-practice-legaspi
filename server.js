@@ -1,6 +1,7 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import routes from './src/routes.js';
 
 /**
  * Resolve directory paths
@@ -64,15 +65,10 @@ const courses = {
 };
 
 /**
- * ==============================
  * Middleware Configuration
- * ==============================
  */
-
-// Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Log incoming requests (excluding system paths)
 app.use((req, res, next) => {
     if (!req.path.startsWith('/.')) {
         console.log(`${req.method} ${req.url}`);
@@ -80,14 +76,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// Global data middleware (available in all templates)
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV.toLowerCase();
     res.locals.currentYear = new Date().getFullYear();
     res.locals.timestamp = new Date().toISOString();
     res.locals.queryParams = req.query || {};
 
-    // Time-based greeting
     const hour = new Date().getHours();
     if (hour < 12) {
         res.locals.greeting = 'Good Morning';
@@ -97,7 +91,6 @@ app.use((req, res, next) => {
         res.locals.greeting = 'Good Evening';
     }
 
-    // Random theme selection
     const themes = ['blue-theme', 'green-theme', 'red-theme'];
     res.locals.bodyClass = themes[Math.floor(Math.random() * themes.length)];
 
@@ -105,26 +98,19 @@ app.use((req, res, next) => {
 });
 
 /**
- * ==============================
  * View Engine Setup
- * ==============================
  */
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
 /**
- * ==============================
  * Route-Specific Middleware
- * ==============================
  */
-
-// Adds a visit count value
 const addVisitCount = (req, res, next) => {
     res.locals.visitCount = 42;
     next();
 };
 
-// Adds custom headers for demo route
 const addDemoHeaders = (req, res, next) => {
     res.setHeader('X-Demo-Page', 'true');
     res.setHeader('X-Middleware-Demo', 'Route-specific middleware demonstration');
@@ -132,29 +118,22 @@ const addDemoHeaders = (req, res, next) => {
 };
 
 /**
- * ==============================
  * Routes
- * ==============================
  */
-
-// Home
 app.get('/', (req, res) => {
     res.render('home', { title: 'Welcome Home' });
 });
 
-// About
 app.get('/about', (req, res) => {
     res.render('about', { title: 'About Me' });
 });
 
-// Middleware demo page
 app.get('/demo', addDemoHeaders, (req, res) => {
     res.render('demo', {
         title: 'Middleware Demo Page'
     });
 });
 
-// Example route using route-specific middleware
 app.get('/welcome', addVisitCount, (req, res) => {
     res.send(`
         <h1>Welcome</h1>
@@ -163,7 +142,6 @@ app.get('/welcome', addVisitCount, (req, res) => {
     `);
 });
 
-// Course catalog
 app.get('/catalog', (req, res) => {
     res.render('catalog', {
         title: 'Course Catalog',
@@ -172,7 +150,6 @@ app.get('/catalog', (req, res) => {
     });
 });
 
-// Course details
 app.get('/catalog/:courseId', (req, res, next) => {
     const course = courses[req.params.courseId];
 
@@ -190,7 +167,6 @@ app.get('/catalog/:courseId', (req, res, next) => {
     });
 });
 
-// Test error route
 app.get('/test-error', (req, res, next) => {
     const err = new Error('This is a test error');
     err.status = 500;
@@ -198,19 +174,19 @@ app.get('/test-error', (req, res, next) => {
 });
 
 /**
- * ==============================
- * Error Handling
- * ==============================
+ * Faculty Routes from src/routes.js
  */
+app.use('/', routes);
 
-// 404 handler
+/**
+ * Error Handling
+ */
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
     next(err);
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
     const status = err.status || 500;
 
@@ -222,9 +198,7 @@ app.use((err, req, res, next) => {
 });
 
 /**
- * ==============================
  * Start Server
- * ==============================
  */
 app.listen(PORT, () => {
     console.log(`Server running on http://127.0.0.1:${PORT}`);
