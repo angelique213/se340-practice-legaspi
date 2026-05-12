@@ -5,27 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
 
-    <% if (NODE_ENV.includes('dev')) { %>
+    <% if (NODE_ENV && NODE_ENV.includes('dev')) { %>
         <script>
             const host = window.location.hostname;
             const currentPort = window.location.port;
             const wsPort = currentPort ? (parseInt(currentPort) + 1) : 3001;
             const ws = new WebSocket(`ws://${host}:${wsPort}`);
-    
+
             ws.onclose = () => {
                 setTimeout(() => location.reload(), 2000);
             };
         </script>
     <% } %>
+
+    <!-- Main styles -->
     <link rel="stylesheet" href="/css/main.css">
+
+    <!-- Catalog styles -->
+    <link rel="stylesheet" href="/css/catalog.css">
 </head>
-<body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/products">Products</a></li>
-            </ul>
-        </nav>
-    </header>
+
+<body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %> <%= typeof page !== 'undefined' && page === 'catalog' ? 'catalog-page' : '' %>">
+
+<header>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/catalog">Course Catalog</a></li>
+            <li><a href="/demo">Middleware Demo</a></li>
+        </ul>
+    </nav>
+
+    <!-- Safe Greeting -->
+    <div class="greeting">
+        <p><%= typeof greeting !== 'undefined' ? greeting : 'Welcome!' %></p>
+    </div>
+</header>
