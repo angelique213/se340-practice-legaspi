@@ -2,7 +2,8 @@
   "name": "se340-practice-legaspi",
   "dependencies": {
     "ejs": "^5.0.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.21.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",

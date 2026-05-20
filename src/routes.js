@@ -24,13 +24,13 @@ router.get('/welcome', addVisitCount, welcomePage);
  * Catalog Routes
  */
 router.get('/catalog', catalogPage);
-router.get('/catalog/:courseId', courseDetailPage);
+router.get('/catalog/:slugId', courseDetailPage);
 
 /**
  * Faculty Routes
  */
 router.get('/faculty', facultyListPage);
-router.get('/faculty/:facultyId', facultyDetailPage);
+router.get('/faculty/:slugId', facultyDetailPage);
 
 /**
  * Test Error Route

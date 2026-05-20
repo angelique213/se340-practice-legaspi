@@ -9,7 +9,7 @@
         <details open>
             <summary>Error Details</summary>
             <pre><%= error %></pre>
-            <pre><%= stack %></pre>
+            <pre><%= error.stack || '' %></pre>
         </details>
     <% } %>
 </main>
