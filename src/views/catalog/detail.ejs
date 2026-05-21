@@ -1,0 +1,108 @@
+<!-- Header partial -->
+<%- include('../partials/header') %>
+
+<main>
+    <div class="catalog-container">
+
+        <!-- Course header information -->
+        <div class="course-header">
+
+            <!-- Course title -->
+            <h1><%= course.name %></h1>
+
+            <!-- Course code and credit hours -->
+            <p class="course-meta">
+                <%= course.courseCode %> •
+                <%= course.creditHours %> credits
+            </p>
+
+            <!-- Course description -->
+            <p class="course-description">
+                <%= course.description %>
+            </p>
+
+        </div>
+
+        <!-- Available sections -->
+        <div class="sections">
+
+            <div class="sections-header">
+
+                <h2>Available Sections</h2>
+
+                <!-- Sorting options -->
+                <div class="sort-options">
+
+                    <span>Sort by: </span>
+
+                    <a href="/catalog/<%= course.slug %>"
+                       class="<%= currentSort === 'time' ? 'active' : '' %>">
+                        Time
+                    </a>
+
+                    <a href="/catalog/<%= course.slug %>?sort=professor"
+                       class="<%= currentSort === 'professor' ? 'active' : '' %>">
+                        Professor
+                    </a>
+
+                    <a href="/catalog/<%= course.slug %>?sort=room"
+                       class="<%= currentSort === 'room' ? 'active' : '' %>">
+                        Room
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Section list -->
+            <div class="section-list">
+
+                <!-- If no sections exist -->
+                <% if (sections.length === 0) { %>
+
+                    <p>No sections available.</p>
+
+                <% } else { %>
+
+                    <!-- Loop through each section -->
+                    <% sections.forEach(section => { %>
+
+                        <div class="section-card">
+
+                            <!-- Section time -->
+                            <div class="section-time">
+                                <%= section.time %>
+                            </div>
+
+                            <!-- Room information -->
+                            <div class="section-room">
+                                Room: <%= section.room %>
+                            </div>
+
+                            <!-- Professor information -->
+                            <div class="section-professor">
+                                Instructor: <%= section.professor %>
+                            </div>
+
+                        </div>
+
+                    <% }); %>
+
+                <% } %>
+
+            </div>
+        </div>
+
+        <!-- Navigation back to catalog -->
+        <div class="navigation">
+            <p>
+                <a href="/catalog">
+                    &larr; Back to Course Catalog
+                </a>
+            </p>
+        </div>
+
+    </div>
+</main>
+
+<!-- Footer partial -->
+<%- include('../partials/footer') %>

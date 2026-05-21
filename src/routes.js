@@ -9,31 +9,52 @@ import { addDemoHeaders, addVisitCount } from './middleware/demo/headers.js';
 const router = express.Router();
 
 /**
- * Basic Pages
+ * Catalog styles
+ */
+router.use('/catalog', (req, res, next) => {
+
+    res.addStyle('<link rel="stylesheet" href="/css/catalog.css">');
+
+    next();
+});
+
+/**
+ * Faculty styles
+ */
+router.use('/faculty', (req, res, next) => {
+
+    res.addStyle('<link rel="stylesheet" href="/css/catalog.css">');
+    res.addStyle('<link rel="stylesheet" href="/css/faculty.css">');
+
+    next();
+});
+
+/**
+ * Basic pages
  */
 router.get('/', homePage);
 router.get('/about', aboutPage);
 
 /**
- * Demo Routes
+ * Demo routes
  */
 router.get('/demo', addDemoHeaders, demoPage);
 router.get('/welcome', addVisitCount, welcomePage);
 
 /**
- * Catalog Routes
+ * Catalog routes
  */
 router.get('/catalog', catalogPage);
 router.get('/catalog/:slugId', courseDetailPage);
 
 /**
- * Faculty Routes
+ * Faculty routes
  */
 router.get('/faculty', facultyListPage);
 router.get('/faculty/:slugId', facultyDetailPage);
 
 /**
- * Test Error Route
+ * Test error route
  */
 router.get('/test-error', testErrorPage);
 

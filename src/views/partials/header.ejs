@@ -18,11 +18,12 @@
         </script>
     <% } %>
 
-    <!-- Main styles -->
+    <!-- Main global styles -->
     <link rel="stylesheet" href="/css/main.css">
 
-    <!-- Catalog styles -->
-    <link rel="stylesheet" href="/css/catalog.css">
+    <!-- Dynamically load page-specific CSS and JS -->
+    <%- renderStyles() %>
+    <%- renderScripts() %>
 </head>
 
 <body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %> <%= typeof page !== 'undefined' && page === 'catalog' ? 'catalog-page' : '' %>">
@@ -38,7 +39,7 @@
         </ul>
     </nav>
 
-    <!-- Safe Greeting -->
+    <!-- Greeting message -->
     <div class="greeting">
         <p><%= typeof greeting !== 'undefined' ? greeting : 'Welcome!' %></p>
     </div>
