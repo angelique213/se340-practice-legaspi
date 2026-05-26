@@ -6,7 +6,7 @@ import { catalogPage, courseDetailPage } from './controllers/catalog/catalog.js'
 
 import { addDemoHeaders, addVisitCount } from './middleware/demo/headers.js';
 import contactRoutes from './controllers/forms/contact.js';
-
+import registrationRoutes from './controllers/forms/registration.js';
 const router = express.Router();
 
 /**
@@ -39,10 +39,23 @@ router.use('/contact', (req, res, next) => {
 
     next();
 });
+
+// Add registration-specific styles to all registration routes
+router.use('/register', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/registration.css">');
+    next();
+});
+
 /**
  * Contact routes
  */
 router.use('/contact', contactRoutes);
+
+/**
+ * Registration routes
+ */
+router.use('/register', registrationRoutes);
+
 /**
  * Basic pages
  */
@@ -71,5 +84,8 @@ router.get('/faculty/:slugId', facultyDetailPage);
  * Test error route
  */
 router.get('/test-error', testErrorPage);
+
+
+
 
 export default router;
