@@ -5,6 +5,7 @@ import { homePage, aboutPage, demoPage, welcomePage, testErrorPage } from './con
 import { catalogPage, courseDetailPage } from './controllers/catalog/catalog.js';
 
 import { addDemoHeaders, addVisitCount } from './middleware/demo/headers.js';
+import contactRoutes from './controllers/forms/contact.js';
 
 const router = express.Router();
 
@@ -29,6 +30,19 @@ router.use('/faculty', (req, res, next) => {
     next();
 });
 
+/**
+ * Contact styles
+ */
+router.use('/contact', (req, res, next) => {
+
+    res.addStyle('<link rel="stylesheet" href="/css/contact.css">');
+
+    next();
+});
+/**
+ * Contact routes
+ */
+router.use('/contact', contactRoutes);
 /**
  * Basic pages
  */

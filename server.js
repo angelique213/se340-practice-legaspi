@@ -28,6 +28,10 @@ const app = express();
  */
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Allow Express to receive and process POST data
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 app.use((req, res, next) => {
     if (!req.path.startsWith('/.')) {
         console.log(`${req.method} ${req.url}`);
