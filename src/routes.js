@@ -7,6 +7,10 @@ import { catalogPage, courseDetailPage } from './controllers/catalog/catalog.js'
 import { addDemoHeaders, addVisitCount } from './middleware/demo/headers.js';
 import contactRoutes from './controllers/forms/contact.js';
 import registrationRoutes from './controllers/forms/registration.js';
+import loginRoutes from './controllers/forms/login.js';
+import { processLogout, showDashboard } from './controllers/forms/login.js';
+import { requireLogin } from './middleware/auth.js';
+
 const router = express.Router();
 
 /**
@@ -43,6 +47,21 @@ router.use('/contact', (req, res, next) => {
 // Add registration-specific styles to all registration routes
 router.use('/register', (req, res, next) => {
     res.addStyle('<link rel="stylesheet" href="/css/registration.css">');
+    next();
+});
+
+/**
+ * Login styles
+ */
+router.use('/login', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/login.css">');
+    next();
+});
+/**
+ * Dashboard styles
+ */
+router.use('/dashboard', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/login.css">');
     next();
 });
 
@@ -85,6 +104,13 @@ router.get('/faculty/:slugId', facultyDetailPage);
  */
 router.get('/test-error', testErrorPage);
 
+/**
+ * Login routes
+ */
+router.use('/login', loginRoutes);
+
+router.get('/logout', processLogout);
+router.get('/dashboard', requireLogin, showDashboard);
 
 
 

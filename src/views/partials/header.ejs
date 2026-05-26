@@ -29,19 +29,28 @@
 <body class="<%= typeof bodyClass !== 'undefined' ? bodyClass : '' %> <%= typeof page !== 'undefined' && page === 'catalog' ? 'catalog-page' : '' %>">
 
 <header>
-    <nav>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/catalog">Course Catalog</a></li>
-            <li><a href="/demo">Middleware Demo</a></li>
-            <li><a href="/faculty">Faculty Directory</a></li>
-            <li><a href="/contact">Contact</a></li>
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/catalog">Course Catalog</a></li>
+        <li><a href="/faculty">Faculty Directory</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/demo">Middleware Demo</a></li>
+
+        <% if (isLoggedIn) { %>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/register/list">All Users</a></li>
             <li><a href="/contact/responses">Contact Responses</a></li>
+            <li><a href="/logout">Logout</a></li>
+        <% } %>
+
+        <% if (!isLoggedIn) { %>
+            <li><a href="/login">Login</a></li>
             <li><a href="/register">Register</a></li>
-            <li><a href="/register/list">Users</a></li>
-        </ul>
-    </nav>
+        <% } %>
+    </ul>
+</nav>
 
     <!-- Greeting message -->
     <div class="greeting">
