@@ -3,9 +3,17 @@ import db from '../db.js';
 
 const findUserByEmail = async (email) => {
     const query = `
-        SELECT id, name, email, password, created_at
+        SELECT
+            users.id,
+            users.name,
+            users.email,
+            users.password,
+            users.created_at,
+            users.role_id,
+            roles.name AS role_name
         FROM users
-        WHERE LOWER(email) = LOWER($1)
+        LEFT JOIN roles ON users.role_id = roles.id
+        WHERE LOWER(users.email) = LOWER($1)
         LIMIT 1
     `;
 

@@ -9,7 +9,7 @@ import contactRoutes from './controllers/forms/contact.js';
 import registrationRoutes from './controllers/forms/registration.js';
 import loginRoutes from './controllers/forms/login.js';
 import { processLogout, showDashboard } from './controllers/forms/login.js';
-import { requireLogin } from './middleware/auth.js';
+import { requireLogin, requireAdmin } from './middleware/auth.js';
 
 const router = express.Router();
 

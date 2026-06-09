@@ -7,40 +7,77 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 /**
+ * Sets up role-based access control tables and columns.
+ */
+const setupRoles = async () => {
+    await db.query(`
+        CREATE TABLE IF NOT EXISTS roles (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(50) UNIQUE NOT NULL,
+            description TEXT
+        );
+
+        INSERT INTO roles (id, name, description)
+        VALUES
+            (1, 'user', 'Standard user with basic access'),
+            (2, 'admin', 'Administrator with full system access')
+        ON CONFLICT (id) DO NOTHING;
+
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS role_id INTEGER;
+
+        UPDATE users
+        SET role_id = 1
+        WHERE role_id IS NULL;
+
+        ALTER TABLE users
+        ALTER COLUMN role_id SET DEFAULT 1;
+
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1
+                FROM pg_constraint
+                WHERE conname = 'users_role_id_fkey'
+            ) THEN
+                ALTER TABLE users
+                ADD CONSTRAINT users_role_id_fkey
+                FOREIGN KEY (role_id)
+                REFERENCES roles(id);
+            END IF;
+        END $$;
+    `);
+
+    console.log('Roles initialized successfully');
+};
+
+/**
  * Sets up the database by running the seed.sql file if needed.
  * Checks if faculty table has data - if not, runs a full re-seed.
  */
 const setupDatabase = async () => {
-    /**
-     * Check if faculty table has any rows and wrap in try-catch to handle cases
-     * where table doesn't exist yet.
-     */
     let hasData = false;
+
     try {
         const result = await db.query(
             "SELECT EXISTS (SELECT 1 FROM faculty LIMIT 1) as has_data"
         );
         hasData = result.rows[0]?.has_data || false;
     } catch (error) {
-        /**
-         * If query fails (e.g., table doesn't exist), treat the same as no data.
-         * This allows the seed process to proceed.
-         */
         hasData = false;
     }
-    
+
     if (hasData) {
         console.log('Database already seeded');
+        await setupRoles();
         return true;
     }
-    
-    // No faculty found - run full seed
+
     console.log('Seeding database...');
     const seedPath = join(__dirname, 'sql', 'seed.sql');
     const seedSQL = fs.readFileSync(seedPath, 'utf8');
     await db.query(seedSQL);
 
-    // Run practice.sql if it exists (for student assignments)
     const practicePath = join(__dirname, 'sql', 'practice.sql');
 
     if (fs.existsSync(practicePath)) {
@@ -49,8 +86,10 @@ const setupDatabase = async () => {
         console.log('Practice database tables initialized');
     }
 
+    await setupRoles();
+
     console.log('Database seeded successfully');
-    
+
     return true;
 };
 

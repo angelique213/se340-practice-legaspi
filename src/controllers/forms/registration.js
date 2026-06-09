@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+import { requireAdmin } from '../../middleware/auth.js';
 
 import { emailExists, saveUser, getAllUsers } from '../../models/forms/registration.js';
 
@@ -105,6 +106,6 @@ router.get('/', showRegistrationForm);
 
 router.post('/', registrationValidation, processRegistration);
 
-router.get('/list', showAllUsers);
+router.get('/list', requireAdmin, showAllUsers);
 
 export default router;

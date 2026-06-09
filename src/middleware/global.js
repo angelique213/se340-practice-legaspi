@@ -68,11 +68,12 @@ const addLocalVariables = (req, res, next) => {
 
     // Session login status
     res.locals.isLoggedIn = false;
+    res.locals.currentUser = null;
 
     if (req.session && req.session.user) {
         res.locals.isLoggedIn = true;
+        res.locals.currentUser = req.session.user;
     }
-
     // Enable dynamic asset loading functionality
     setHeadAssetsFunctionality(res);
 
