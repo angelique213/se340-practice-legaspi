@@ -8,23 +8,21 @@ const router = Router();
  * Display the contact form page.
  */
 const showContactForm = (req, res) => {
-
     res.render('forms/contact/form', {
         title: 'Contact Us'
     });
-
 };
 
 /**
  * Handle contact form submission with validation.
  */
 const handleContactSubmission = async (req, res) => {
-
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-
-        console.error('Validation errors:', errors.array());
+        errors.array().forEach(error => {
+            req.flash('error', error.msg);
+        });
 
         return res.redirect('/contact');
     }
@@ -32,17 +30,15 @@ const handleContactSubmission = async (req, res) => {
     const { subject, message } = req.body;
 
     try {
-
         await createContactForm(subject, message);
 
-        console.log('Contact form submitted successfully');
-
-        res.redirect('/contact/responses');
+        req.flash('success', 'Thank you for contacting us! We will respond soon.');
+        res.redirect('/contact');
 
     } catch (error) {
-
         console.error('Error saving contact form:', error);
 
+        req.flash('error', 'Unable to submit your message. Please try again later.');
         res.redirect('/contact');
     }
 };
@@ -51,15 +47,12 @@ const handleContactSubmission = async (req, res) => {
  * Display all contact form submissions.
  */
 const showContactResponses = async (req, res) => {
-
     let contactForms = [];
 
     try {
-
         contactForms = await getAllContactForms();
 
     } catch (error) {
-
         console.error('Error retrieving contact forms:', error);
     }
 

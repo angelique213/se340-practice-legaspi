@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -5,6 +7,7 @@ import { setupDatabase, testConnection } from './src/models/setup.js';
 
 import routes from './src/routes.js';
 import { addLocalVariables } from './src/middleware/global.js';
+import flash from './src/middleware/flash.js';
 
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
@@ -59,7 +62,7 @@ app.use(
             }
         }),
 
-        secret: process.env.SESSION_SECRET,
+        secret: process.env.SESSION_SECRET || 'dev-secret-key',
 
         resave: false,
 
@@ -72,7 +75,6 @@ app.use(
     })
 );
 
-
 app.use((req, res, next) => {
     if (!req.path.startsWith('/.')) {
         console.log(`${req.method} ${req.url}`);
@@ -81,6 +83,7 @@ app.use((req, res, next) => {
 });
 
 app.use(addLocalVariables);
+app.use(flash);
 
 /**
  * View Engine Setup

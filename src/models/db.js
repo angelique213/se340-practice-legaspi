@@ -25,7 +25,7 @@ const pool = new Pool({
     ssl: {
         ca: caCert,  // Use the certificate content, not the file path
         rejectUnauthorized: true,  // Keep this true for proper security
-        checkServerIdentity: () => { return undefined; }  // Skip hostname verification but keep cert chain validation
+        checkServerIdentity: () => undefined  // Skip hostname verification but keep cert chain validation
     }
 });
 
@@ -36,7 +36,7 @@ const pool = new Pool({
  */
 let db = null;
 
-if (process.env.NODE_ENV.includes('dev') && process.env.ENABLE_SQL_LOGGING === 'true') {
+if (process.env.NODE_ENV?.includes('dev') && process.env.ENABLE_SQL_LOGGING === 'true') {
     /**
      * In development mode, we wrap the pool to provide query logging.
      * This helps with debugging by showing all executed queries in the console.

@@ -6,9 +6,6 @@ import { emailExists, saveUser, getAllUsers } from '../../models/forms/registrat
 
 const router = Router();
 
-/**
- * Validation rules for user registration.
- */
 const registrationValidation = [
     body('name')
         .trim()
@@ -28,6 +25,7 @@ const registrationValidation = [
 
     body('password')
         .isLength({ min: 8 })
+        .withMessage('Password must be at least 8 characters')
         .matches(/[0-9]/)
         .withMessage('Password must contain at least one number')
         .matches(/[!@#$%^&*]/)
@@ -38,23 +36,20 @@ const registrationValidation = [
         .withMessage('Passwords must match')
 ];
 
-/**
- * Display the registration form page.
- */
 const showRegistrationForm = (req, res) => {
     res.render('forms/registration/form', {
         title: 'User Registration'
     });
 };
 
-/**
- * Handle user registration with validation and password hashing.
- */
 const processRegistration = async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        console.error('Validation errors:', errors.array());
+        errors.array().forEach(error => {
+            req.flash('error', error.msg);
+        });
+
         return res.redirect('/register');
     }
 
@@ -64,7 +59,7 @@ const processRegistration = async (req, res) => {
         const exists = await emailExists(email);
 
         if (exists) {
-            console.log('Email already registered');
+            req.flash('warning', 'An account with this email already exists.');
             return res.redirect('/register');
         }
 
@@ -72,19 +67,17 @@ const processRegistration = async (req, res) => {
 
         await saveUser(name, email, hashedPassword);
 
-        console.log('User registered successfully');
-
-        res.redirect('/register/list');
+        req.flash('success', 'Registration successful! Please log in.');
+        res.redirect('/login');
 
     } catch (error) {
         console.error('Error registering user:', error);
+
+        req.flash('error', 'Unable to register your account. Please try again later.');
         res.redirect('/register');
     }
 };
 
-/**
- * Display all registered users.
- */
 const showAllUsers = async (req, res) => {
     let users = [];
 
@@ -100,19 +93,10 @@ const showAllUsers = async (req, res) => {
     });
 };
 
-/**
- * GET /register - Display registration form
- */
 router.get('/', showRegistrationForm);
 
-/**
- * POST /register - Handle registration form submission
- */
 router.post('/', registrationValidation, processRegistration);
 
-/**
- * GET /register/list - Display all registered users
- */
 router.get('/list', showAllUsers);
 
 export default router;
