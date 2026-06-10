@@ -1,34 +1,27 @@
-import { body, validationResult } from 'express-validator';
-import { findUserByEmail, verifyPassword } from '../../models/forms/login.js';
 import { Router } from 'express';
+import { validationResult } from 'express-validator';
+
+import { findUserByEmail, verifyPassword } from '../../models/forms/login.js';
+import { loginValidation } from '../../middleware/validation/forms.js';
 
 const router = Router();
 
-const loginValidation = [
-    body('email')
-        .trim()
-        .isEmail()
-        .withMessage('Please provide a valid email address')
-        .normalizeEmail()
-        .isLength({ max: 255 })
-        .withMessage('Email address is too long'),
-
-    body('password')
-        .notEmpty()
-        .withMessage('Password is required')
-        .isLength({ min: 8, max: 128 })
-        .withMessage('Password must be between 8 and 128 characters')
-];
-
+/**
+ * Shows the login form.
+ */
 const showLoginForm = (req, res) => {
     res.render('forms/login/form', {
         title: 'User Login'
     });
 };
 
+/**
+ * Logs in a user if credentials are valid.
+ */
 const processLogin = async (req, res) => {
     const errors = validationResult(req);
 
+    // Send validation errors back to the user.
     if (!errors.isEmpty()) {
         errors.array().forEach(error => {
             req.flash('error', error.msg);
@@ -54,6 +47,7 @@ const processLogin = async (req, res) => {
             return res.redirect('/login');
         }
 
+        // Never store the password in the session.
         delete user.password;
 
         req.session.user = user;
@@ -69,6 +63,9 @@ const processLogin = async (req, res) => {
     }
 };
 
+/**
+ * Logs out the current user.
+ */
 const processLogout = (req, res) => {
     if (!req.session) {
         return res.redirect('/');
@@ -86,10 +83,14 @@ const processLogout = (req, res) => {
     });
 };
 
+/**
+ * Shows the logged-in user's dashboard.
+ */
 const showDashboard = (req, res) => {
     const user = req.session.user;
     const sessionData = req.session;
 
+    // Extra safety: remove password if it ever appears.
     if (user && user.password) {
         console.error('Security error: password found in user object');
         delete user.password;
@@ -107,6 +108,9 @@ const showDashboard = (req, res) => {
     });
 };
 
+/**
+ * Login routes.
+ */
 router.get('/', showLoginForm);
 router.post('/', loginValidation, processLogin);
 
