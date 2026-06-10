@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import { createContactForm, getAllContactForms } from '../../models/forms/contact.js';
-import { requireAdmin } from '../../middleware/auth.js';
+import { requireRole } from '../../middleware/auth.js';
 
 const router = Router();
 
@@ -102,6 +102,6 @@ router.post(
 /**
  * GET /contact/responses
  */
-router.get('/responses', requireAdmin, showContactResponses);
+router.get('/responses', requireRole('admin'), showContactResponses);
 
 export default router;

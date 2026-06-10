@@ -8,18 +8,24 @@ const requireLogin = (req, res, next) => {
     }
 };
 
-const requireAdmin = (req, res, next) => {
-    if (!req.session || !req.session.user) {
-        req.flash('error', 'You must be logged in to access that page.');
-        return res.redirect('/login');
-    }
+/**
+ * Middleware factory to require specific role
+ */
+const requireRole = (roleName) => {
+    return (req, res, next) => {
 
-    if (req.session.user.role_name !== 'admin') {
-        req.flash('error', 'You do not have permission to access that page.');
-        return res.redirect('/dashboard');
-    }
+        if (!req.session || !req.session.user) {
+            req.flash('error', 'You must be logged in to access this page.');
+            return res.redirect('/login');
+        }
 
-    next();
+        if (req.session.user.roleName !== roleName) {
+            req.flash('error', 'You do not have permission to access this page.');
+            return res.redirect('/');
+        }
+
+        next();
+    };
 };
 
-export { requireLogin, requireAdmin };
+export { requireLogin, requireRole };

@@ -9,7 +9,9 @@ import contactRoutes from './controllers/forms/contact.js';
 import registrationRoutes from './controllers/forms/registration.js';
 import loginRoutes from './controllers/forms/login.js';
 import { processLogout, showDashboard } from './controllers/forms/login.js';
-import { requireLogin, requireAdmin } from './middleware/auth.js';
+
+// Login protection middleware
+import { requireLogin } from './middleware/auth.js';
 
 const router = express.Router();
 
@@ -17,9 +19,7 @@ const router = express.Router();
  * Catalog styles
  */
 router.use('/catalog', (req, res, next) => {
-
     res.addStyle('<link rel="stylesheet" href="/css/catalog.css">');
-
     next();
 });
 
@@ -27,10 +27,8 @@ router.use('/catalog', (req, res, next) => {
  * Faculty styles
  */
 router.use('/faculty', (req, res, next) => {
-
     res.addStyle('<link rel="stylesheet" href="/css/catalog.css">');
     res.addStyle('<link rel="stylesheet" href="/css/faculty.css">');
-
     next();
 });
 
@@ -38,13 +36,13 @@ router.use('/faculty', (req, res, next) => {
  * Contact styles
  */
 router.use('/contact', (req, res, next) => {
-
     res.addStyle('<link rel="stylesheet" href="/css/contact.css">');
-
     next();
 });
 
-// Add registration-specific styles to all registration routes
+/**
+ * Registration styles
+ */
 router.use('/register', (req, res, next) => {
     res.addStyle('<link rel="stylesheet" href="/css/registration.css">');
     next();
@@ -57,6 +55,7 @@ router.use('/login', (req, res, next) => {
     res.addStyle('<link rel="stylesheet" href="/css/login.css">');
     next();
 });
+
 /**
  * Dashboard styles
  */
@@ -66,14 +65,11 @@ router.use('/dashboard', (req, res, next) => {
 });
 
 /**
- * Contact routes
+ * Form routes
  */
 router.use('/contact', contactRoutes);
-
-/**
- * Registration routes
- */
 router.use('/register', registrationRoutes);
+router.use('/login', loginRoutes);
 
 /**
  * Basic pages
@@ -105,13 +101,9 @@ router.get('/faculty/:slugId', facultyDetailPage);
 router.get('/test-error', testErrorPage);
 
 /**
- * Login routes
+ * Account routes
  */
-router.use('/login', loginRoutes);
-
 router.get('/logout', processLogout);
 router.get('/dashboard', requireLogin, showDashboard);
-
-
 
 export default router;
