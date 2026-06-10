@@ -3,7 +3,15 @@
 <main>
     <h1><%= faculty.name %></h1>
 
-    <div class="course-card">
+    <div class="course-card faculty-card">
+
+        <!-- Faculty profile image -->
+        <img
+            class="faculty-photo faculty-detail-photo"
+            src="/images/faculty/<%= faculty.slug %>.jpg"
+            alt="Photo of <%= faculty.name %>"
+        >
+
         <p><strong>Title:</strong> <%= faculty.title %></p>
         <p><strong>Department:</strong> <%= faculty.department %></p>
         <p><strong>Office:</strong> <%= faculty.office %></p>

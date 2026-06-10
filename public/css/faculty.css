@@ -1,0 +1,38 @@
+/* Faculty card layout */
+.faculty-card {
+    position: relative;
+    max-width: 520px;
+    margin: 24px auto;
+    padding: 28px;
+    border-radius: 14px;
+}
+
+/* Faculty profile images */
+.faculty-photo {
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    background: url('https://placehold.co/480') center / cover no-repeat;
+}
+
+/* Faculty name spacing */
+.faculty-card h2 {
+    margin-top: 10px;
+    margin-bottom: 14px;
+}
+
+/* Faculty detail image */
+.faculty-detail-photo {
+    max-width: 340px;
+}
+
+/* Faculty text spacing */
+.faculty-card p {
+    margin: 10px 0;
+    line-height: 1.5;
+}
